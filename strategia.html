@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>Strategy</title>
+<style>
+
+body{
+background-color:#383838;
+}
+#container{
+width:1200px;
+height:600px;
+margin:auto;
+}
+.block{
+border: 1px solid black;
+width:58px;
+height:58px;
+float:left;
+background-color:#136800;
+}
+
+</style>
+
+</head>
+<body>
+<div id="container">
+</div>
+
+</body>
+</html>
+<script>
+
+
+function ClickEvent(e) {
+
+	const index = Array.from(e.parentElement.children).indexOf(e);
+	document.getElementsByClassName("block")[index-20].style.background = "blue";
+	document.getElementsByClassName("block")[index-1] .style.background = "blue";
+	document.getElementsByClassName("block")[index+1] .style.background = "blue";
+	document.getElementsByClassName("block")[index+20].style.background = "blue";
+	
+}
+
+var ContainerHTML="";
+for(var i=0;i<200;i++)
+ContainerHTML+='<div onclick="ClickEvent(this)""  class="block"></div>';
+document.getElementById("container").innerHTML=ContainerHTML;
+document.getElementsByClassName("block")[44].innerHTML="Łucznik";// index = x + y
+
+
+</script>
