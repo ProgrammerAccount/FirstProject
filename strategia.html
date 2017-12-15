@@ -16,7 +16,10 @@ border: 1px solid black;
 width:58px;
 height:58px;
 float:left;
-background-color:#136800;
+background-color:#31c63b;
+}
+error{
+display:none;
 }
 
 </style>
@@ -25,27 +28,79 @@ background-color:#136800;
 <body>
 <div id="container">
 </div>
-
+<div id="error"></div>
 </body>
 </html>
 <script>
-
+function isDefine(e)
+{
+	if(e==undefined) return document.getElementById("error");
+	else return e;
+}
+var indexOfObject=-1;
 
 function ClickEvent(e) {
 
-	const index = Array.from(e.parentElement.children).indexOf(e);
-	document.getElementsByClassName("block")[index-20].style.background = "blue";
-	document.getElementsByClassName("block")[index-1] .style.background = "blue";
-	document.getElementsByClassName("block")[index+1] .style.background = "blue";
-	document.getElementsByClassName("block")[index+20].style.background = "blue";
-	
+		var blocks=document.getElementsByClassName("block");
+		const index = Array.from(e.parentElement.children).indexOf(e);
+		var bottomBlock=isDefine(blocks[index-20]);
+		var leftBlock=isDefine(blocks[index-1]);
+		var rightBlock=isDefine(blocks[index+1]);
+		var topBlock=isDefine(blocks[index+20]);
+
+	if(e.name=="withObject")
+	{
+		e.name = "readyToMove";
+		indexOfObject=index;
+		
+		if(bottomBlock.name==undefined)
+		{
+			bottomBlock.style.background = "#3573d6";
+			bottomBlock.name="waiting";
+		}
+		if(leftBlock.name==undefined)
+		{
+			leftBlock.style.background = "#3573d6";
+			leftBlock.name="waiting";
+		}
+		if(rightBlock.name==undefined)
+		{
+			rightBlock.style.background = "#3573d6";
+			rightBlock.name="waiting";
+		}
+		if(topBlock.name==undefined)
+		{
+			topBlock.style.background = "#3573d6";
+			topBlock.name="waiting";
+		}	
+	}
+	else if(e.name=="waiting")
+	{
+		e.innerHTML=blocks[indexOfObject].innerHTML;
+		blocks[indexOfObject].innerHTML="";
+		isDefine(blocks[indexOfObject-20]).style.background = "#31c63b";
+		isDefine(blocks[indexOfObject+20]).style.background = "#31c63b";
+		isDefine(blocks[indexOfObject+1]).style.background = "#31c63b";
+		isDefine(blocks[indexOfObject-1]).style.background = "#31c63b";
+		isDefine(blocks[indexOfObject-20]).name=undefined;
+		isDefine(blocks[indexOfObject+20]).name=undefined;
+		isDefine(blocks[indexOfObject+1]).name=undefined;
+		isDefine(blocks[indexOfObject-1]).name=undefined;
+		isDefine(blocks[indexOfObject]).name=undefined;
+		e.name="withObject";
+		indexOfObject=-1;
+		
+	}
 }
 
 var ContainerHTML="";
 for(var i=0;i<200;i++)
-ContainerHTML+='<div onclick="ClickEvent(this)""  class="block"></div>';
+{
+ContainerHTML+='<div onclick="ClickEvent(this)" class="block"></div>';
+}
+
 document.getElementById("container").innerHTML=ContainerHTML;
 document.getElementsByClassName("block")[44].innerHTML="Łucznik";// index = x + y
-
+document.getElementsByClassName("block")[44].name="withObject";
 
 </script>
