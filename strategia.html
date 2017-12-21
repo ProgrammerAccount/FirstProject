@@ -32,11 +32,74 @@ display:none;
 </body>
 </html>
 <script>
+class Object
+{
+	constructor(x,y)
+	{
+		this.HP=0;
+		this.range=0;
+		this.damage=0;
+		this.position=x+y*20;
+		this.objectName="";
+	}
+
+	Attact(enemy)
+	{
+		if((enemy.position>=this.position-this.range)&&
+		   (enemy.position<=this.position+this.range)&&
+		   (enemy.position/10>=this.position/10-this.range)&&
+		   (enemy.position/10<=this.position/10+this.range))
+		   {
+				alert("attack!");
+				enemy.HP= enemy.HP-this.damage;
+		   }
+	}
+	
+	Move(blocks,index)
+	{
+		this.position=index;
+		isDefine(blocks[index]).name=this.objectName;
+		isDefine(blocks[index]).innerHTML=this.Display();
+	}
+};
+class MarksMan extends Object
+{
+	constructor(x,y)
+	{
+		super();
+		super.HP=50;
+		super.range=3;
+		super.damage=20;
+		super.position=x+y*20;
+		super.objectName="MarksMan";
+	}
+
+	Move(blocks,index)
+	{
+		super.Move(blocks,index);
+	}
+
+	Attact(blocks,index)
+	{
+		super.Attact(blocks,index);
+	}
+
+	Display()
+	{
+		return "Łucznik";
+	}
+};
+
 function isDefine(e)
 {
 	if(e==undefined) return document.getElementById("error");
 	else return e;
-}
+} 
+
+
+var MM= new MarksMan(9,4);
+
+
 var indexOfObject=-1;
 
 function ClickEvent(e) {
@@ -48,9 +111,9 @@ function ClickEvent(e) {
 		var rightBlock=isDefine(blocks[index+1]);
 		var topBlock=isDefine(blocks[index+20]);
 
-	if(e.name=="withObject")
+	if(e.name=="MarksMan")//||inna nazwa klasy
 	{
-		e.name = "readyToMove";
+		
 		indexOfObject=index;
 		
 		if(bottomBlock.name==undefined)
@@ -76,7 +139,7 @@ function ClickEvent(e) {
 	}
 	else if(e.name=="waiting")
 	{
-		e.innerHTML=blocks[indexOfObject].innerHTML;
+		
 		blocks[indexOfObject].innerHTML="";
 		isDefine(blocks[indexOfObject-20]).style.background = "#31c63b";
 		isDefine(blocks[indexOfObject+20]).style.background = "#31c63b";
@@ -87,10 +150,12 @@ function ClickEvent(e) {
 		isDefine(blocks[indexOfObject+1]).name=undefined;
 		isDefine(blocks[indexOfObject-1]).name=undefined;
 		isDefine(blocks[indexOfObject]).name=undefined;
-		e.name="withObject";
 		indexOfObject=-1;
 		
+		MM.Move(blocks,index);	
+		
 	}
+	
 }
 
 var ContainerHTML="";
@@ -100,7 +165,6 @@ ContainerHTML+='<div onclick="ClickEvent(this)" class="block"></div>';
 }
 
 document.getElementById("container").innerHTML=ContainerHTML;
-document.getElementsByClassName("block")[44].innerHTML="Łucznik";// index = x + y
-document.getElementsByClassName("block")[44].name="withObject";
+MM.Move(document.getElementsByClassName("block"),44);
 
 </script>
