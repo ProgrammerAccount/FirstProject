@@ -54,69 +54,104 @@ class MarksMan extends Object
 };
 function isDefine(e)
 {
-	if(e==undefined) return document.getElementById("error");
+	if(e===undefined) return document.getElementById("error");
 	else return e;
 } 
+function GetObject(name)
+{
+    switch(name)
+    {
+        case "MarksMan": return new MarksMan(0,0);break; 
+      
+        
+        
+    }  
+}
+function WaitingState(element)
+{
+    
+    
+}
 const blocks=document.getElementsByClassName("block");
+const WAITING_BLOCK_COLOR="#3573d6";
+const DEFAULT_BLOCK_COLOR="#31c63b";
+const WAITING_STATE="waiting";
+const DEFAULT_STATE=undefined;
 let MM1= new MarksMan(0,4);
 let MM2= new MarksMan(0,6);
 let MM3= new MarksMan(1,5);
 let indexOfObject=-1;
+let GameState = "PM";
+//WFM - waiting for move
+//PM - player move
+//BM - bot move
+
 function ClickEvent(e) {
-		
+
 		const index = Array.from(e.parentElement.children).indexOf(e);
 		let bottomBlock=isDefine(blocks[index-20]);
+                
 		let leftBlock=isDefine(blocks[index-1]);
 		let rightBlock=isDefine(blocks[index+1]);
 		let topBlock=isDefine(blocks[index+20]);
-	if(e.name=="MarksMan")//||inna nazwa klasy
-	{
+                if((index-1)%20===19) leftBlock=document.getElementById("error");
+                if(index%20===19) rightBlock=document.getElementById("error");
+            if(GameState==="PM" && e.name==="MarksMan")//||inna nazwa klasy
+            {
 		
 		indexOfObject=index;
 		
-		if(bottomBlock.name==undefined)
+		if(bottomBlock.name===DEFAULT_STATE)
 		{
-			bottomBlock.style.background = "#3573d6";
-			bottomBlock.name="waiting";
+			bottomBlock.style.background = WAITING_BLOCK_COLOR;
+			bottomBlock.name=WAITING_STATE;
 		}
-		if(leftBlock.name==undefined)
+		if(leftBlock.name===DEFAULT_STATE)
 		{
-			leftBlock.style.background = "#3573d6";
-			leftBlock.name="waiting";
+			leftBlock.style.background = WAITING_BLOCK_COLOR;
+			leftBlock.name=WAITING_STATE;
 		}
-		if(rightBlock.name==undefined)
+		if(rightBlock.name===DEFAULT_STATE)
 		{
-			rightBlock.style.background = "#3573d6";
-			rightBlock.name="waiting";
+			rightBlock.style.background = WAITING_BLOCK_COLOR;
+			rightBlock.name=WAITING_STATE;
 		}
-		if(topBlock.name==undefined)
+		if(topBlock.name===DEFAULT_STATE)
 		{
-			topBlock.style.background = "#3573d6";
-			topBlock.name="waiting";
-		}	
-	}
-	else if(e.name=="waiting")
-	{
-		
+			topBlock.style.background = WAITING_BLOCK_COLOR;
+			topBlock.name=WAITING_STATE;
+		}
+                GameState="WFM";
+            }
+            else if(GameState==="WFM"&&e.name===WAITING_STATE)
+            {
+            
+		let nameObject=blocks[indexOfObject].name;
 		blocks[indexOfObject].innerHTML="";
-		isDefine(blocks[indexOfObject-20]).style.background = "#31c63b";
-		isDefine(blocks[indexOfObject+20]).style.background = "#31c63b";
-		isDefine(blocks[indexOfObject+1]).style.background = "#31c63b";
-		isDefine(blocks[indexOfObject-1]).style.background = "#31c63b";
-		isDefine(blocks[indexOfObject-20]).name=undefined;
-		isDefine(blocks[indexOfObject+20]).name=undefined;
-		isDefine(blocks[indexOfObject+1]).name=undefined;
-		isDefine(blocks[indexOfObject-1]).name=undefined;
-		isDefine(blocks[indexOfObject]).name=undefined;
+		isDefine(blocks[indexOfObject-20]).style.background = DEFAULT_BLOCK_COLOR;
+		isDefine(blocks[indexOfObject+20]).style.background = DEFAULT_BLOCK_COLOR;
+		isDefine(blocks[indexOfObject+1]).style.background = DEFAULT_BLOCK_COLOR;
+		isDefine(blocks[indexOfObject-1]).style.background = DEFAULT_BLOCK_COLOR;
+                if(isDefine(blocks[indexOfObject-20]).name===WAITING_STATE)
+                    isDefine(blocks[indexOfObject-20]).name=DEFAULT_STATE;
+                if(isDefine(blocks[indexOfObject+20]).name===WAITING_STATE)
+                    isDefine(blocks[indexOfObject+20]).name=DEFAULT_STATE;
+                if(isDefine(blocks[indexOfObject+1]).name===WAITING_STATE)
+                    isDefine(blocks[indexOfObject+1]).name=DEFAULT_STATE;
+                if(isDefine(blocks[indexOfObject-1]).name===WAITING_STATE)
+                    isDefine(blocks[indexOfObject-1]).name=DEFAULT_STATE;
+                isDefine(blocks[indexOfObject]).name=DEFAULT_STATE;
 		indexOfObject=-1;
 		
-		MM.Move(blocks,index);	
-		
+		GetObject(nameObject).Move(blocks,index);	
+		GameState="PM";//TODO : change to BM;
 	}
 	
-}
+        }
+    
+    
 let ContainerHTML="";
-for(var i=0;i<200;i++)
+for(let i=0;i<200;i++)
 {
 ContainerHTML+='<div onclick="ClickEvent(this)" class="block"></div>';
 }
